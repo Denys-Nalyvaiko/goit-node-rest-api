@@ -13,11 +13,7 @@ export const createContactSchema = Joi.object({
 });
 
 export const updateContactSchema = Joi.object({
-  name: Joi.string().messages({ "any.required": "Field name is not correct" }),
-  email: Joi.string().messages({
-    "any.required": "Field email is not correct",
-  }),
-  phone: Joi.string().messages({
-    "any.required": "Field phone is not correct",
-  }),
+  name: Joi.string(),
+  email: Joi.string(),
+  phone: Joi.string(),
 });

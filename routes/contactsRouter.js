@@ -23,6 +23,10 @@ contactsRouter.post(
   createContact
 );
 
-contactsRouter.put("/:id", updateContact);
+contactsRouter.put(
+  "/:id",
+  validateBody(schemas.updateContactSchema),
+  updateContact
+);
 
 export default contactsRouter;
