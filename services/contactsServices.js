@@ -85,3 +85,35 @@ export const removeContact = async (contactId) => {
     return error;
   }
 };
+
+export const updateContact = async (contactId, { name, email, phone }) => {
+  try {
+    const contactList = await listContacts();
+    const contactUpdatedList = [];
+    const updatedContact = {};
+
+    for (const contact of contactList) {
+      if (contact.id !== contactId) {
+        contactUpdatedList.push(contact);
+        continue;
+      }
+
+      updatedContact.id = contact.id;
+      updatedContact.name = name || contact.name;
+      updatedContact.email = email || contact.email;
+      updatedContact.phone = phone || contact.phone;
+
+      contactUpdatedList.push(updatedContact);
+    }
+
+    if (JSON.stringify(contactList) === JSON.stringify(contactUpdatedList)) {
+      return null;
+    }
+
+    await fs.writeFile(contactsPath, JSON.stringify(contactUpdatedList));
+
+    return updatedContact;
+  } catch (error) {
+    return error;
+  }
+};
