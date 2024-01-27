@@ -9,10 +9,6 @@ export const listContacts = async () => {
     const contactListBuffer = await fs.readFile(contactsPath);
     const contactList = JSON.parse(contactListBuffer.toString());
 
-    if (!contactList.length) {
-      return "Contact List is Empty";
-    }
-
     return contactList;
   } catch (error) {
     return error;
@@ -20,10 +16,6 @@ export const listContacts = async () => {
 };
 
 export const getContactById = async (contactId) => {
-  if (!contactId) {
-    return "You need enter contact id";
-  }
-
   try {
     const contactListBuffer = await fs.readFile(contactsPath);
     const contactList = JSON.parse(contactListBuffer.toString());
@@ -54,10 +46,6 @@ export const addContact = async ({ name, email, phone }) => {
 };
 
 export const removeContact = async (contactId) => {
-  if (!contactId) {
-    return "You need enter contact id";
-  }
-
   try {
     const contactListBuffer = await fs.readFile(contactsPath);
     const contactList = JSON.parse(contactListBuffer.toString());
