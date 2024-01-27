@@ -50,6 +50,14 @@ export const deleteContact = async (req, res) => {
   }
 };
 
-export const createContact = (req, res) => {};
+export const createContact = async (req, res) => {
+  const newContact = req.body;
+  const contact = await contactsService.addContact(newContact);
+
+  res.status(201).json({
+    message: "Created",
+    contact,
+  });
+};
 
 export const updateContact = (req, res) => {};
