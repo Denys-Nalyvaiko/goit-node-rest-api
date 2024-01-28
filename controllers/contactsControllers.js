@@ -4,10 +4,7 @@ import * as contactsService from "../services/contactsServices.js";
 export const getAllContacts = async (req, res) => {
   const contactsList = await contactsService.listContacts();
 
-  res.status(200).json({
-    message: "Success!",
-    contacts: contactsList,
-  });
+  res.status(200).json(contactsList);
 };
 
 export const getOneContact = async (req, res) => {
@@ -19,10 +16,7 @@ export const getOneContact = async (req, res) => {
       throw HttpError(404);
     }
 
-    res.status(200).json({
-      message: "Success!",
-      contact,
-    });
+    res.status(200).json(contact);
   } catch ({ message }) {
     res.status(404).json({
       message,
@@ -39,10 +33,7 @@ export const deleteContact = async (req, res) => {
       throw HttpError(404);
     }
 
-    res.status(200).json({
-      message: "Success!",
-      contact,
-    });
+    res.status(200).json(contact);
   } catch ({ message }) {
     res.status(404).json({
       message,
@@ -54,10 +45,7 @@ export const createContact = async (req, res) => {
   const newContact = req.body;
   const contact = await contactsService.addContact(newContact);
 
-  res.status(201).json({
-    message: "Created",
-    contact,
-  });
+  res.status(201).json(contact);
 };
 
 export const updateContact = async (req, res) => {
@@ -79,10 +67,7 @@ export const updateContact = async (req, res) => {
       throw HttpError(404);
     }
 
-    res.status(200).json({
-      message: "Success!",
-      contact,
-    });
+    res.status(200).json(contact);
   } catch ({ message }) {
     res.status(404).json({
       message,
