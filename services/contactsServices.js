@@ -79,12 +79,15 @@ export const updateContact = async (contactId, { name, email, phone }) => {
     const contactList = await listContacts();
     const contactUpdatedList = [];
     const updatedContact = {};
+    let isValidId = false;
 
     for (const contact of contactList) {
       if (contact.id !== contactId) {
         contactUpdatedList.push(contact);
         continue;
       }
+
+      isValidId = true;
 
       updatedContact.id = contact.id;
       updatedContact.name = name || contact.name;
@@ -94,7 +97,7 @@ export const updateContact = async (contactId, { name, email, phone }) => {
       contactUpdatedList.push(updatedContact);
     }
 
-    if (JSON.stringify(contactList) === JSON.stringify(contactUpdatedList)) {
+    if (!isValidId) {
       return null;
     }
 
