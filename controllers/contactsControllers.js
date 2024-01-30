@@ -1,69 +1,46 @@
 import HttpError from "../helpers/HttpError.js";
+import catchAsync from "../helpers/catchAsync.js";
 import * as contactsService from "../services/contactsServices.js";
 
-export const getAllContacts = async (req, res) => {
-  try {
-    const contactsList = await contactsService.listContacts();
+export const getAllContacts = catchAsync(async (req, res) => {
+  const contactsList = await contactsService.listContacts();
 
-    res.status(200).json(contactsList);
-  } catch ({ message }) {
-    res.status(404).json({
-      message,
-    });
-  }
-};
+  res.status(200).json(contactsList);
+});
 
-export const getOneContact = async (req, res) => {
+export const getOneContact = catchAsync(async (req, res) => {
   const contactId = req.params.id;
 
-  try {
-    const contact = await contactsService.getContactById(contactId);
+  const contact = await contactsService.getContactById(contactId);
 
-    if (!contact) {
-      throw HttpError(404);
-    }
-
-    res.status(200).json(contact);
-  } catch ({ message }) {
-    res.status(404).json({
-      message,
-    });
+  if (!contact) {
+    throw HttpError(404);
   }
-};
 
-export const deleteContact = async (req, res) => {
+  res.status(200).json(contact);
+});
+
+export const deleteContact = catchAsync(async (req, res) => {
   const contactId = req.params.id;
 
-  try {
-    const contact = await contactsService.removeContact(contactId);
+  const contact = await contactsService.removeContact(contactId);
 
-    if (!contact) {
-      throw HttpError(404);
-    }
-
-    res.status(200).json(contact);
-  } catch ({ message }) {
-    res.status(404).json({
-      message,
-    });
+  if (!contact) {
+    throw HttpError(404);
   }
-};
 
-export const createContact = async (req, res) => {
+  res.status(200).json(contact);
+});
+
+export const createContact = catchAsync(async (req, res) => {
   const newContact = req.body;
 
-  try {
-    const contact = await contactsService.addContact(newContact);
+  const contact = await contactsService.addContact(newContact);
 
-    res.status(201).json(contact);
-  } catch ({ message }) {
-    res.status(404).json({
-      message,
-    });
-  }
-};
+  res.status(201).json(contact);
+});
 
-export const updateContact = async (req, res) => {
+export const updateContact = catchAsync(async (req, res) => {
   const targetContact = req.body;
   const contactId = req.params.id;
 
@@ -75,20 +52,11 @@ export const updateContact = async (req, res) => {
     return;
   }
 
-  try {
-    const contact = await contactsService.updateContact(
-      contactId,
-      targetContact
-    );
+  const contact = await contactsService.updateContact(contactId, targetContact);
 
-    if (!contact) {
-      throw HttpError(404);
-    }
-
-    res.status(200).json(contact);
-  } catch ({ message }) {
-    res.status(404).json({
-      message,
-    });
+  if (!contact) {
+    throw HttpError(404);
   }
-};
+
+  res.status(200).json(contact);
+});
