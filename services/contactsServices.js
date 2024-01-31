@@ -1,25 +1,15 @@
 import fs from "fs/promises";
 import path from "path";
 import { nanoid } from "nanoid";
+import { Types } from "mongoose";
 import { Contact } from "../models/contactsModel.js";
+import HttpError from "../helpers/HttpError.js";
 
 const contactsPath = path.resolve("db", "contacts.json");
 
 export const listContacts = () => Contact.find();
 
-export const getContactById = async (contactId) => {
-  try {
-    const contactListBuffer = await fs.readFile(contactsPath);
-    const contactList = JSON.parse(contactListBuffer.toString());
-
-    const targetContact =
-      contactList.find((contact) => contact.id === contactId) || null;
-
-    return targetContact;
-  } catch (error) {
-    return error;
-  }
-};
+export const getContactById = async (contactId) => Contact.findById(contactId);
 
 export const addContact = async ({ name, email, phone }) => {
   const newContact = { id: nanoid(), name, email, phone };
@@ -98,5 +88,14 @@ export const updateContact = async (contactId, { name, email, phone }) => {
     return updatedContact;
   } catch (error) {
     return error;
+  }
+};
+
+export const checkContactId = (contactId) => {
+  const isValidId = Types.ObjectId.isValid(contactId);
+  const isUserExists = Contact.exists({ _id: contactId });
+
+  if (!isValidId || !isUserExists) {
+    throw HttpError(404);
   }
 };

@@ -9,13 +9,7 @@ export const getAllContacts = catchAsync(async (req, res) => {
 });
 
 export const getOneContact = catchAsync(async (req, res) => {
-  const contactId = req.params.id;
-
-  const contact = await contactsService.getContactById(contactId);
-
-  if (!contact) {
-    throw HttpError(404);
-  }
+  const contact = await contactsService.getContactById(req.params.id);
 
   res.status(200).json(contact);
 });
