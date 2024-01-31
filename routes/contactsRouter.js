@@ -16,7 +16,11 @@ contactsRouter.get("/", getAllContacts);
 
 contactsRouter.get("/:id", contactsMiddlewares.checkContactId, getOneContact);
 
-contactsRouter.delete("/:id", deleteContact);
+contactsRouter.delete(
+  "/:id",
+  contactsMiddlewares.checkContactId,
+  deleteContact
+);
 
 contactsRouter.post(
   "/",

@@ -15,13 +15,7 @@ export const getOneContact = catchAsync(async (req, res) => {
 });
 
 export const deleteContact = catchAsync(async (req, res) => {
-  const contactId = req.params.id;
-
-  const contact = await contactsService.removeContact(contactId);
-
-  if (!contact) {
-    throw HttpError(404);
-  }
+  const contact = await contactsService.removeContact(req.params.id);
 
   res.status(200).json(contact);
 });
