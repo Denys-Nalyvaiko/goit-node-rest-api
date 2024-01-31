@@ -25,12 +25,14 @@ contactsRouter.delete(
 contactsRouter.post(
   "/",
   validateBody(schemas.createContactSchema),
+  contactsMiddlewares.checkContactExists,
   createContact
 );
 
 contactsRouter.put(
   "/:id",
   validateBody(schemas.updateContactSchema),
+  contactsMiddlewares.contactUpdateMiddleware,
   updateContact
 );
 

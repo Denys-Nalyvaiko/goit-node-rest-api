@@ -1,11 +1,6 @@
-import fs from "fs/promises";
-import path from "path";
-import { nanoid } from "nanoid";
 import { Types } from "mongoose";
 import { Contact } from "../models/contactsModel.js";
 import HttpError from "../helpers/HttpError.js";
-
-const contactsPath = path.resolve("db", "contacts.json");
 
 export const listContacts = () => Contact.find();
 
@@ -16,39 +11,12 @@ export const addContact = async (contact) => Contact.create(contact);
 export const removeContact = async (contactId) =>
   Contact.findByIdAndDelete(contactId);
 
-export const updateContact = async (contactId, { name, email, phone }) => {
-  try {
-    const contactList = await listContacts();
-    const contactUpdatedList = [];
-    const updatedContact = {};
-    let isValidId = false;
+export const updateContact = async (contactId, contactData) => {
+  const contact = await Contact.findById(contactId);
 
-    for (const contact of contactList) {
-      if (contact.id !== contactId) {
-        contactUpdatedList.push(contact);
-        continue;
-      }
+  Object.keys(contactData).forEach((key) => (contact[key] = contactData[key]));
 
-      isValidId = true;
-
-      updatedContact.id = contact.id;
-      updatedContact.name = name || contact.name;
-      updatedContact.email = email || contact.email;
-      updatedContact.phone = phone || contact.phone;
-
-      contactUpdatedList.push(updatedContact);
-    }
-
-    if (!isValidId) {
-      return null;
-    }
-
-    await fs.writeFile(contactsPath, JSON.stringify(contactUpdatedList));
-
-    return updatedContact;
-  } catch (error) {
-    return error;
-  }
+  return contact.save();
 };
 
 export const checkContactId = async (contactId) => {
@@ -62,5 +30,13 @@ export const checkContactId = async (contactId) => {
 
   if (!isContactExists) {
     throw HttpError(404);
+  }
+};
+
+export const checkContactExists = async (filter) => {
+  const isContactExists = await Contact.exists(filter);
+
+  if (isContactExists) {
+    throw HttpError(409);
   }
 };

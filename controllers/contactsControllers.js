@@ -27,22 +27,7 @@ export const createContact = catchAsync(async (req, res) => {
 });
 
 export const updateContact = catchAsync(async (req, res) => {
-  const targetContact = req.body;
-  const contactId = req.params.id;
-
-  if (!Object.keys(targetContact).length) {
-    res.status(400).json({
-      message: "Body must have at least one field",
-    });
-
-    return;
-  }
-
-  const contact = await contactsService.updateContact(contactId, targetContact);
-
-  if (!contact) {
-    throw HttpError(404);
-  }
+  const contact = await contactsService.updateContact(req.params.id, req.body);
 
   res.status(200).json(contact);
 });
