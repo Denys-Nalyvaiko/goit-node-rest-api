@@ -11,21 +11,7 @@ export const listContacts = () => Contact.find();
 
 export const getContactById = async (contactId) => Contact.findById(contactId);
 
-export const addContact = async ({ name, email, phone }) => {
-  const newContact = { id: nanoid(), name, email, phone };
-
-  try {
-    const contactListBuffer = await fs.readFile(contactsPath);
-    const contactList = JSON.parse(contactListBuffer.toString());
-    const contactUpdatedList = [...contactList, newContact];
-
-    await fs.writeFile(contactsPath, JSON.stringify(contactUpdatedList));
-
-    return newContact;
-  } catch (error) {
-    return error;
-  }
-};
+export const addContact = async (contact) => Contact.create(contact);
 
 export const removeContact = async (contactId) => {
   try {
