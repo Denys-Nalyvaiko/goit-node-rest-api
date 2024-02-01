@@ -8,7 +8,9 @@ import {
   deleteContact,
   createContact,
   updateContact,
+  updateStatusContact,
 } from "../controllers/contactsControllers.js";
+import { CONTACT_KEYS } from "../constants/contactKeys.js";
 
 const contactsRouter = express.Router();
 
@@ -34,6 +36,20 @@ contactsRouter.put(
   validateBody(schemas.updateContactSchema),
   contactsMiddlewares.contactUpdateMiddleware,
   updateContact
+);
+
+contactsRouter.patch(
+  "/:id/favorite",
+  validateBody(schemas.updateContactSchema),
+  contactsMiddlewares.contactUpdateMiddleware,
+  (req, res, next) =>
+    contactsMiddlewares.checkNecessaryKeysAvailability(
+      req,
+      res,
+      next,
+      CONTACT_KEYS.FAVORITE
+    ),
+  updateStatusContact
 );
 
 export default contactsRouter;

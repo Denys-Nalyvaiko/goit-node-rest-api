@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
-import { Contact } from "../models/contactsModel.js";
 import HttpError from "../helpers/HttpError.js";
+import { Contact } from "../models/contactsModel.js";
 
 export const listContacts = () => Contact.find();
 
@@ -15,6 +15,14 @@ export const updateContact = async (contactId, contactData) => {
   const contact = await Contact.findById(contactId);
 
   Object.keys(contactData).forEach((key) => (contact[key] = contactData[key]));
+
+  return contact.save();
+};
+
+export const updateStatusContact = async (contactId, body) => {
+  const contact = await Contact.findById(contactId);
+
+  contact.favorite = body.favorite ?? contact.favorite;
 
   return contact.save();
 };
@@ -38,5 +46,19 @@ export const checkContactExists = async (filter) => {
 
   if (isContactExists) {
     throw HttpError(409);
+  }
+};
+
+export const checkNecessaryKeysAvailability = (body, keys) => {
+  if (!Array.isArray(keys)) {
+    keys = [keys];
+  }
+
+  const hasNeccessaryKeys = Object.keys(body).every((element) =>
+    keys.includes(element)
+  );
+
+  if (!hasNeccessaryKeys) {
+    throw HttpError(400, `You can update only ${keys} field(s)`);
   }
 };
