@@ -8,9 +8,6 @@ export const getContactById = async (contactId) => Contact.findById(contactId);
 
 export const addContact = async (contact) => Contact.create(contact);
 
-export const removeContact = async (contactId) =>
-  Contact.findByIdAndDelete(contactId);
-
 export const updateContact = async (contactId, contactData) => {
   const contact = await Contact.findById(contactId);
 
@@ -18,6 +15,9 @@ export const updateContact = async (contactId, contactData) => {
 
   return contact.save();
 };
+
+export const removeContact = async (contactId) =>
+  Contact.findByIdAndDelete(contactId);
 
 export const checkContactId = async (contactId) => {
   const isValidId = Types.ObjectId.isValid(contactId);

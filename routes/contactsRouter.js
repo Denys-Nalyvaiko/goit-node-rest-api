@@ -17,12 +17,6 @@ contactsRouter.get("/", getAllContacts);
 
 contactsRouter.get("/:id", contactsMiddlewares.checkContactId, getOneContact);
 
-contactsRouter.delete(
-  "/:id",
-  contactsMiddlewares.checkContactId,
-  deleteContact
-);
-
 contactsRouter.post(
   "/",
   validateBody(schemas.createContactSchema),
@@ -49,6 +43,12 @@ contactsRouter.patch(
       CONTACT_KEYS.FAVORITE
     ),
   updateContact
+);
+
+contactsRouter.delete(
+  "/:id",
+  contactsMiddlewares.checkContactId,
+  deleteContact
 );
 
 export default contactsRouter;

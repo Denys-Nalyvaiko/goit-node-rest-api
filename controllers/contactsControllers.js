@@ -14,12 +14,6 @@ export const getOneContact = catchAsync(async (req, res) => {
   res.status(200).json(contact);
 });
 
-export const deleteContact = catchAsync(async (req, res) => {
-  const contact = await contactsService.removeContact(req.params.id);
-
-  res.status(200).json(contact);
-});
-
 export const createContact = catchAsync(async (req, res) => {
   const contact = await contactsService.addContact(req.body);
 
@@ -28,6 +22,12 @@ export const createContact = catchAsync(async (req, res) => {
 
 export const updateContact = catchAsync(async (req, res) => {
   const contact = await contactsService.updateContact(req.params.id, req.body);
+
+  res.status(200).json(contact);
+});
+
+export const deleteContact = catchAsync(async (req, res) => {
+  const contact = await contactsService.removeContact(req.params.id);
 
   res.status(200).json(contact);
 });
