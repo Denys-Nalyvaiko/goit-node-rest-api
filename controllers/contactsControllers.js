@@ -31,12 +31,3 @@ export const updateContact = catchAsync(async (req, res) => {
 
   res.status(200).json(contact);
 });
-
-export const updateStatusContact = catchAsync(async (req, res) => {
-  const contact = await contactsService.updateStatusContact(
-    req.params.id,
-    req.body
-  );
-
-  res.status(200).json(contact);
-});

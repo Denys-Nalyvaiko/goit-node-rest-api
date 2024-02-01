@@ -19,14 +19,6 @@ export const updateContact = async (contactId, contactData) => {
   return contact.save();
 };
 
-export const updateStatusContact = async (contactId, body) => {
-  const contact = await Contact.findById(contactId);
-
-  contact.favorite = body.favorite ?? contact.favorite;
-
-  return contact.save();
-};
-
 export const checkContactId = async (contactId) => {
   const isValidId = Types.ObjectId.isValid(contactId);
 
@@ -59,6 +51,6 @@ export const checkNecessaryKeysAvailability = (body, keys) => {
   );
 
   if (!hasNeccessaryKeys) {
-    throw HttpError(400, `You can update only ${keys} field(s)`);
+    throw HttpError(400, `Only ${keys} field(s) can be updated`);
   }
 };

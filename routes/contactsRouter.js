@@ -8,7 +8,6 @@ import {
   deleteContact,
   createContact,
   updateContact,
-  updateStatusContact,
 } from "../controllers/contactsControllers.js";
 import { CONTACT_KEYS } from "../constants/contactKeys.js";
 
@@ -49,7 +48,7 @@ contactsRouter.patch(
       next,
       CONTACT_KEYS.FAVORITE
     ),
-  updateStatusContact
+  updateContact
 );
 
 export default contactsRouter;
