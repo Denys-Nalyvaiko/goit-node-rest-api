@@ -33,14 +33,14 @@ contactsRouter.post(
 contactsRouter.put(
   "/:id",
   validateBody(schemas.updateContactSchema),
-  contactsMiddlewares.contactUpdateMiddleware,
+  contactsMiddlewares.checkUpdatedContact,
   updateContact
 );
 
 contactsRouter.patch(
   "/:id/favorite",
   validateBody(schemas.updateContactSchema),
-  contactsMiddlewares.contactUpdateMiddleware,
+  contactsMiddlewares.checkUpdatedContact,
   (req, res, next) =>
     contactsMiddlewares.checkNecessaryKeysAvailability(
       req,

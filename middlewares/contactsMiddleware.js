@@ -12,7 +12,7 @@ export const checkContactExists = catchAsync(async (req, _, next) => {
   next();
 });
 
-export const contactUpdateMiddleware = catchAsync(async (req, _, next) => {
+export const checkUpdatedContact = catchAsync(async (req, _, next) => {
   if (!Object.keys(req.body).length) {
     throw HttpError(400, "Body must have at least one field");
   }
