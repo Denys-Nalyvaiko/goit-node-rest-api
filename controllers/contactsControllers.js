@@ -1,4 +1,3 @@
-import HttpError from "../helpers/HttpError.js";
 import catchAsync from "../helpers/catchAsync.js";
 import * as contactsService from "../services/contactsServices.js";
 
