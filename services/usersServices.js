@@ -27,3 +27,11 @@ export const loginUser = async ({ email, password }) => {
 };
 
 export const logoutUser = () => {};
+
+export const checkUserExists = async (filter) => {
+  const isUserExists = await User.exists(filter);
+
+  if (isUserExists) {
+    throw HttpError(409);
+  }
+};
