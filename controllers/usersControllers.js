@@ -8,9 +8,9 @@ export const registerUserController = catchAsync(async (req, res) => {
 });
 
 export const loginUserController = catchAsync(async (req, res) => {
-  const user = await services.loginUser(req.body);
+  const { user, token } = await services.loginUser(req.body);
 
-  res.status(200).json(user);
+  res.status(200).json({ user, token });
 });
 
 export const logoutUserController = catchAsync(async (req, res) => {});

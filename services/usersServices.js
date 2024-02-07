@@ -1,5 +1,7 @@
+import { Types } from "mongoose";
 import HttpError from "../helpers/HttpError.js";
 import { User } from "../models/usersModel.js";
+import * as jwtServices from "../services/jwtServices.js";
 
 export const registerUser = async (userData) => {
   const user = await User.create(userData);
@@ -23,7 +25,9 @@ export const loginUser = async ({ email, password }) => {
 
   user.password = undefined;
 
-  return user;
+  const token = jwtServices.signToken(user.id);
+
+  return { user, token };
 };
 
 export const logoutUser = () => {};
@@ -33,5 +37,21 @@ export const checkUserExists = async (filter) => {
 
   if (isUserExists) {
     throw HttpError(409);
+  }
+};
+
+export const getUserById = (userId) => User.findById(userId);
+
+export const checkUserId = async (id) => {
+  const isValidId = Types.ObjectId.isValid(id);
+
+  if (!isValidId) {
+    throw HttpError(404);
+  }
+
+  const isUserExists = await User.exists({ _id: id });
+
+  if (!isUserExists) {
+    throw HttpError(404);
   }
 };
