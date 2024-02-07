@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import { hash } from "bcrypt";
+import { DEFAULT_SALT_ROUNDS } from "../constants/defaultSaltRounds.js";
 
 dotenv.config();
 
@@ -10,6 +11,9 @@ export async function hashUsersPassword(next) {
     return next();
   }
 
-  this.password = await hash(this.password, Number(SALT_ROUNDS) ?? 10);
+  this.password = await hash(
+    this.password,
+    Number(SALT_ROUNDS) ?? DEFAULT_SALT_ROUNDS
+  );
   next();
 }
