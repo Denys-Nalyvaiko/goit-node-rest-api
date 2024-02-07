@@ -11,6 +11,10 @@ usersRouter.post(
   controllers.registerUserController
 );
 
-usersRouter.post("/login", validateBody(schemas.createUserSchema));
+usersRouter.post(
+  "/login",
+  validateBody(schemas.createUserSchema),
+  controllers.loginUserController
+);
 
 export default usersRouter;

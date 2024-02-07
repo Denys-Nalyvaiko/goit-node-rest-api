@@ -8,6 +8,22 @@ export const registerUser = async (userData) => {
   return user;
 };
 
-export const loginUser = (userData) => {};
+export const loginUser = async ({ email, password }) => {
+  const user = await User.findOne({ email }).select("+password");
+
+  if (!user) {
+    throw HttpError(401);
+  }
+
+  const isValidPassword = await user.comparePassword(password, user.password);
+
+  if (!isValidPassword) {
+    throw HttpError(401);
+  }
+
+  user.password = undefined;
+
+  return user;
+};
 
 export const logoutUser = () => {};
