@@ -1,7 +1,7 @@
 import Joi from "joi";
 import { SUBSCRIPTION_TYPE } from "../constants/subscriptionTypes.js";
 
-export const createUsersSchema = Joi.object({
+export const createUserSchema = Joi.object({
   email: Joi.string()
     .required()
     .email()

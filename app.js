@@ -3,6 +3,7 @@ import morgan from "morgan";
 import cors from "cors";
 
 import contactsRouter from "./routes/contactsRouter.js";
+import usersRouter from "./routes/usersRouter.js";
 import { startServer } from "./server.js";
 
 export const app = express();
@@ -11,6 +12,7 @@ app.use(morgan("tiny"));
 app.use(cors());
 app.use(express.json());
 
+app.use("/users", usersRouter);
 app.use("/api/contacts", contactsRouter);
 
 app.use((_, res) => {
