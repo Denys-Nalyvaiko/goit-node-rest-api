@@ -11,6 +11,7 @@ const usersSchema = new Schema(
     password: {
       type: String,
       required: [true, "Set password for user"],
+      select: false,
     },
     subscription: {
       type: String,
