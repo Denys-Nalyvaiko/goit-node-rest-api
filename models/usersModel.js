@@ -1,7 +1,9 @@
 import { Schema, model } from "mongoose";
 import { SUBSCRIPTION_TYPE } from "../constants/subscriptionTypes.js";
+import { hashUsersPassword } from "../hooks/usersHooks.js";
+import { comparePassword } from "../customMethods/customUserMethods.js";
 
-const usersSchema = new Schema(
+export const usersSchema = new Schema(
   {
     email: {
       type: String,
@@ -22,5 +24,9 @@ const usersSchema = new Schema(
   },
   { versionKey: false }
 );
+
+usersSchema.pre("save", hashUsersPassword);
+
+usersSchema.methods.comparePassword = comparePassword;
 
 export const User = model("User", usersSchema);
