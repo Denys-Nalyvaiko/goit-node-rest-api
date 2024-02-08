@@ -7,14 +7,25 @@ export const listContacts = async ({ id }, query) => {
     owner: id,
   };
 
-  Object.keys(query).forEach((key) => (filter[key] = query[key]));
+  if (query.favorite) {
+    filter.favorite = query.favorite;
+  }
 
-  const contacts = await Contact.find(filter).populate({
+  const contactsQuery = Contact.find(filter).populate({
     path: "owner",
     select: "email",
   });
 
-  return contacts;
+  const page = query.page ? Number(query.page) : 1;
+  const limit = query.limit ? Number(query.limit) : 20;
+  const skip = (page - 1) * limit;
+
+  contactsQuery.skip(skip).limit(limit);
+
+  const contacts = await contactsQuery;
+  const total = await Contact.countDocuments(filter);
+
+  return { page, limit, total, contacts };
 };
 
 export const getContactById = async (contactId, { id }) => {
