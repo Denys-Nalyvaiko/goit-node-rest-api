@@ -3,35 +3,33 @@ import validateBody from "../helpers/validateBody.js";
 import * as schemas from "../schemas/contactsSchemas.js";
 import * as contactsMiddlewares from "../middlewares/contactsMiddleware.js";
 import * as authMiddlewares from "../middlewares/authMiddlewares.js";
-import {
-  getAllContacts,
-  getOneContact,
-  deleteContact,
-  createContact,
-  updateContact,
-} from "../controllers/contactsControllers.js";
+import * as contactsControllers from "../controllers/contactsControllers.js";
 import { CONTACT_KEYS } from "../constants/contactKeys.js";
 
 const contactsRouter = express.Router();
 
 contactsRouter.use(authMiddlewares.protect);
 
-contactsRouter.get("/", getAllContacts);
+contactsRouter.get("/", contactsControllers.getAllContacts);
 
-contactsRouter.get("/:id", contactsMiddlewares.checkContactId, getOneContact);
+contactsRouter.get(
+  "/:id",
+  contactsMiddlewares.checkContactId,
+  contactsControllers.getOneContact
+);
 
 contactsRouter.post(
   "/",
   validateBody(schemas.createContactSchema),
   contactsMiddlewares.checkContactExists,
-  createContact
+  contactsControllers.createContact
 );
 
 contactsRouter.put(
   "/:id",
   validateBody(schemas.updateContactSchema),
   contactsMiddlewares.checkUpdatedContact,
-  updateContact
+  contactsControllers.updateContact
 );
 
 contactsRouter.patch(
@@ -45,13 +43,13 @@ contactsRouter.patch(
       next,
       CONTACT_KEYS.FAVORITE
     ),
-  updateContact
+  contactsControllers.updateContact
 );
 
 contactsRouter.delete(
   "/:id",
   contactsMiddlewares.checkContactId,
-  deleteContact
+  contactsControllers.deleteContact
 );
 
 export default contactsRouter;
