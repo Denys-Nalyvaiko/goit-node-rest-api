@@ -3,7 +3,7 @@ import catchAsync from "../helpers/catchAsync.js";
 import * as jwtServices from "../services/jwtServices.js";
 import * as userServices from "../services/usersServices.js";
 
-export const protect = catchAsync(async (req, res, next) => {
+export const protect = catchAsync(async (req, _, next) => {
   const token =
     req.headers.authorization?.startsWith("Bearer") &&
     req.headers.authorization.split(" ")[1];

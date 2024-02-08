@@ -2,22 +2,53 @@ import { Types } from "mongoose";
 import HttpError from "../helpers/HttpError.js";
 import { Contact } from "../models/contactsModel.js";
 
-export const listContacts = () => Contact.find();
+export const listContacts = ({ id }) =>
+  Contact.find({ owner: id }).populate({ path: "owner", select: "email" });
 
-export const getContactById = async (contactId) => Contact.findById(contactId);
+export const getContactById = async (contactId, { id }) => {
+  const contact = await Contact.findOne({ _id: contactId, owner: id }).populate(
+    { path: "owner", select: "email" }
+  );
 
-export const addContact = async (contact) => Contact.create(contact);
+  if (!contact) {
+    throw HttpError(404);
+  }
 
-export const updateContact = async (contactId, contactData) => {
-  const contact = await Contact.findById(contactId);
+  return contact;
+};
+
+export const addContact = async (contact, owner) =>
+  Contact.create({ ...contact, owner });
+
+export const updateContact = async (contactId, contactData, { id }) => {
+  const contact = await Contact.findOne({ _id: contactId, owner: id }).populate(
+    { path: "owner", select: "email" }
+  );
+
+  if (!contact) {
+    throw HttpError(404);
+  }
 
   Object.keys(contactData).forEach((key) => (contact[key] = contactData[key]));
 
   return contact.save();
 };
 
-export const removeContact = async (contactId) =>
-  Contact.findByIdAndDelete(contactId);
+export const removeContact = async (contactId, { id }) => {
+  const contact = await Contact.findOneAndDelete({
+    _id: contactId,
+    owner: id,
+  }).populate({
+    path: "owner",
+    select: "email",
+  });
+
+  if (!contact) {
+    throw HttpError(404);
+  }
+
+  return contact;
+};
 
 export const checkContactId = async (contactId) => {
   const isValidId = Types.ObjectId.isValid(contactId);
