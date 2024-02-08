@@ -36,6 +36,12 @@ export const logoutUser = async () => {
 
 export const getUserById = (userId) => User.findById(userId);
 
+export const getCurrentUser = async (currentUser) => {
+  const user = await User.findOne({ _id: currentUser.id }).select("-_id");
+
+  return user;
+};
+
 export const checkUserExists = async (filter) => {
   const isUserExists = await User.exists(filter);
 
