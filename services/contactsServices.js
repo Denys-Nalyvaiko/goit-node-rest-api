@@ -2,8 +2,20 @@ import { Types } from "mongoose";
 import HttpError from "../helpers/HttpError.js";
 import { Contact } from "../models/contactsModel.js";
 
-export const listContacts = ({ id }) =>
-  Contact.find({ owner: id }).populate({ path: "owner", select: "email" });
+export const listContacts = async ({ id }, query) => {
+  const filter = {
+    owner: id,
+  };
+
+  Object.keys(query).forEach((key) => (filter[key] = query[key]));
+
+  const contacts = await Contact.find(filter).populate({
+    path: "owner",
+    select: "email",
+  });
+
+  return contacts;
+};
 
 export const getContactById = async (contactId, { id }) => {
   const contact = await Contact.findOne({ _id: contactId, owner: id }).populate(
