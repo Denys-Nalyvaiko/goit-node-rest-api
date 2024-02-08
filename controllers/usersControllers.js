@@ -21,3 +21,7 @@ export const logoutUserController = catchAsync(async (req, res) => {
 
   res.sendStatus(204);
 });
+
+export const getCurrentController = catchAsync(async (req, res) => {
+  res.status(200).json(req.user);
+});

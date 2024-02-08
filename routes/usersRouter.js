@@ -26,4 +26,10 @@ usersRouter.post(
   controllers.logoutUserController
 );
 
+usersRouter.get(
+  "/current",
+  authMiddlewares.protect,
+  controllers.getCurrentController
+);
+
 export default usersRouter;

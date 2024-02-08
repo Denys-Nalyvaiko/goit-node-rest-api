@@ -34,6 +34,8 @@ export const logoutUser = async () => {
   return "";
 };
 
+export const getUserById = (userId) => User.findById(userId);
+
 export const checkUserExists = async (filter) => {
   const isUserExists = await User.exists(filter);
 
@@ -41,8 +43,6 @@ export const checkUserExists = async (filter) => {
     throw HttpError(409);
   }
 };
-
-export const getUserById = (userId) => User.findById(userId);
 
 export const checkUserId = async (id) => {
   const isValidId = Types.ObjectId.isValid(id);
