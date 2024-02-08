@@ -14,13 +14,13 @@ export const loginUser = async ({ email, password }) => {
   const user = await User.findOne({ email }).select("+password");
 
   if (!user) {
-    throw HttpError(401);
+    throw HttpError(401, "Email or password is wrong");
   }
 
   const isValidPassword = await user.comparePassword(password, user.password);
 
   if (!isValidPassword) {
-    throw HttpError(401);
+    throw HttpError(401, "Email or password is wrong");
   }
 
   user.password = undefined;
