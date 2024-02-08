@@ -30,7 +30,9 @@ export const loginUser = async ({ email, password }) => {
   return { user, token };
 };
 
-export const logoutUser = () => {};
+export const logoutUser = async () => {
+  return "";
+};
 
 export const checkUserExists = async (filter) => {
   const isUserExists = await User.exists(filter);
