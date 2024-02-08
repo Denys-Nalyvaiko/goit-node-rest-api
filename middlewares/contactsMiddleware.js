@@ -20,8 +20,3 @@ export const checkUpdatedContact = catchAsync(async (req, _, next) => {
   await contactsService.checkContactId(req.params.id);
   next();
 });
-
-export const checkNecessaryKeysAvailability = (req, _, next, keys) => {
-  contactsService.checkNecessaryKeysAvailability(req.body, keys);
-  next();
-};

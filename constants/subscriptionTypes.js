@@ -1,4 +1,4 @@
-export const SUBSCRIPTION_TYPE = Object.create({
+export const SUBSCRIPTION_TYPE = Object.freeze({
   STARTER: "starter",
   PRO: "pro",
   BUSINESS: "business",

@@ -31,3 +31,9 @@ export const logoutUserController = catchAsync(async (req, res) => {
 export const getCurrentController = catchAsync(async (req, res) => {
   res.status(200).json(req.user);
 });
+
+export const changeUserSubscriptionController = catchAsync(async (req, res) => {
+  const user = await services.updateUser(req.user._id, req.body);
+
+  res.status(200).json(user);
+});

@@ -57,3 +57,15 @@ export const checkUserId = async (id) => {
     throw HttpError(404);
   }
 };
+
+export const updateUser = async (userId, userData) => {
+  const user = await User.findOne({ _id: userId });
+
+  if (!user) {
+    throw HttpError(404);
+  }
+
+  Object.keys(userData).forEach((key) => (user[key] = userData[key]));
+
+  return user.save();
+};

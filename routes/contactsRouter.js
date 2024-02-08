@@ -3,6 +3,7 @@ import validateBody from "../helpers/validateBody.js";
 import * as schemas from "../schemas/contactsSchemas.js";
 import * as contactsMiddlewares from "../middlewares/contactsMiddleware.js";
 import * as authMiddlewares from "../middlewares/authMiddlewares.js";
+import * as commonMiddlewares from "../middlewares/commonMiddlewares.js";
 import * as contactsControllers from "../controllers/contactsControllers.js";
 import { CONTACT_KEYS } from "../constants/contactKeys.js";
 
@@ -37,7 +38,7 @@ contactsRouter.patch(
   validateBody(schemas.updateContactSchema),
   contactsMiddlewares.checkUpdatedContact,
   (req, res, next) =>
-    contactsMiddlewares.checkNecessaryKeysAvailability(
+    commonMiddlewares.checkNecessaryKeysAvailability(
       req,
       res,
       next,
