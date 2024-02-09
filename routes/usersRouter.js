@@ -31,7 +31,6 @@ usersRouter.post(
 usersRouter.get(
   "/current",
   authMiddlewares.protect,
-  usersMiddlewares.checkUserExists,
   controllers.getCurrentController
 );
 
