@@ -26,12 +26,13 @@ export const loginUser = async ({ email, password }) => {
   user.password = undefined;
 
   const token = jwtServices.signToken(user.id);
+  await User.findByIdAndUpdate(user._id, { token });
 
   return { user, token };
 };
 
-export const logoutUser = async () => {
-  return "";
+export const logoutUser = async (id) => {
+  await User.findByIdAndUpdate(id, { token: "" });
 };
 
 export const getUserById = (userId) => User.findById(userId);

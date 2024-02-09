@@ -20,10 +20,7 @@ export const loginUserController = catchAsync(async (req, res) => {
 });
 
 export const logoutUserController = catchAsync(async (req, res) => {
-  const token = await services.logoutUser();
-
-  req.headers.authorization = token;
-  req.user = undefined;
+  await services.logoutUser(req.user._id);
 
   res.sendStatus(204);
 });
