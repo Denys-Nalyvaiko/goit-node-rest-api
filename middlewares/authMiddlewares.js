@@ -1,5 +1,6 @@
 import HttpError from "../helpers/HttpError.js";
 import catchAsync from "../helpers/catchAsync.js";
+import * as jwtServices from "../services/jwtServices.js";
 import { User } from "../models/usersModel.js";
 
 export const protect = catchAsync(async (req, _, next) => {
@@ -11,9 +12,15 @@ export const protect = catchAsync(async (req, _, next) => {
     throw HttpError(401);
   }
 
-  const currentUser = await User.findOne({ token });
+  const id = jwtServices.checkToken(token);
 
-  if (!currentUser) {
+  if (!id) {
+    throw HttpError(401);
+  }
+
+  const currentUser = await User.findById(id);
+
+  if (!currentUser || currentUser.token !== token) {
     throw HttpError(401);
   }
 
