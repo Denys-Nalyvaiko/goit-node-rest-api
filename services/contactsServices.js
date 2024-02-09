@@ -41,7 +41,10 @@ export const getContactById = async (contactId, { id }) => {
 };
 
 export const addContact = async (contact, owner) =>
-  Contact.create({ ...contact, owner });
+  (await Contact.create({ ...contact, owner })).populate({
+    path: "owner",
+    select: "email",
+  });
 
 export const updateContact = async (contactId, contactData, { id }) => {
   const contact = await Contact.findOne({ _id: contactId, owner: id }).populate(
