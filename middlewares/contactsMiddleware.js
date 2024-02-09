@@ -8,7 +8,10 @@ export const checkContactId = catchAsync(async (req, _, next) => {
 });
 
 export const checkContactExists = catchAsync(async (req, _, next) => {
-  await contactsService.checkContactExists({ email: req.body.email });
+  await contactsService.checkContactExists({
+    email: req.body.email,
+    owner: req.user.id,
+  });
   next();
 });
 
