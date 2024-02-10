@@ -2,22 +2,79 @@ import { Types } from "mongoose";
 import HttpError from "../helpers/HttpError.js";
 import { Contact } from "../models/contactsModel.js";
 
-export const listContacts = () => Contact.find();
+export const listContacts = async ({ id }, query) => {
+  const filter = {
+    owner: id,
+  };
 
-export const getContactById = async (contactId) => Contact.findById(contactId);
+  if (query.favorite) {
+    filter.favorite = query.favorite;
+  }
 
-export const addContact = async (contact) => Contact.create(contact);
+  const contactsQuery = Contact.find(filter).populate({
+    path: "owner",
+    select: "email",
+  });
 
-export const updateContact = async (contactId, contactData) => {
-  const contact = await Contact.findById(contactId);
+  const page = query.page ? Number(query.page) : 1;
+  const limit = query.limit ? Number(query.limit) : 20;
+  const skip = (page - 1) * limit;
+
+  contactsQuery.skip(skip).limit(limit);
+
+  const contacts = await contactsQuery;
+  const total = await Contact.countDocuments(filter);
+
+  return { page, limit, total, contacts };
+};
+
+export const getContactById = async (contactId, { id }) => {
+  const contact = await Contact.findOne({ _id: contactId, owner: id }).populate(
+    { path: "owner", select: "email" }
+  );
+
+  if (!contact) {
+    throw HttpError(404);
+  }
+
+  return contact;
+};
+
+export const addContact = async (contact, owner) =>
+  (await Contact.create({ ...contact, owner })).populate({
+    path: "owner",
+    select: "email",
+  });
+
+export const updateContact = async (contactId, contactData, { id }) => {
+  const contact = await Contact.findOne({ _id: contactId, owner: id }).populate(
+    { path: "owner", select: "email" }
+  );
+
+  if (!contact) {
+    throw HttpError(404);
+  }
 
   Object.keys(contactData).forEach((key) => (contact[key] = contactData[key]));
 
   return contact.save();
 };
 
-export const removeContact = async (contactId) =>
-  Contact.findByIdAndDelete(contactId);
+export const removeContact = async (contactId, { id }) => {
+  const contact = await Contact.findOneAndDelete({
+    _id: contactId,
+    owner: id,
+  }).populate({
+    path: "owner",
+    select: "email",
+  });
+
+  if (!contact) {
+    throw HttpError(404);
+  }
+
+  return contact;
+};
 
 export const checkContactId = async (contactId) => {
   const isValidId = Types.ObjectId.isValid(contactId);
@@ -38,19 +95,5 @@ export const checkContactExists = async (filter) => {
 
   if (isContactExists) {
     throw HttpError(409);
-  }
-};
-
-export const checkNecessaryKeysAvailability = (body, keys) => {
-  if (!Array.isArray(keys)) {
-    keys = [keys];
-  }
-
-  const hasNeccessaryKeys = Object.keys(body).every((element) =>
-    keys.includes(element)
-  );
-
-  if (!hasNeccessaryKeys) {
-    throw HttpError(400, `Only ${keys} field(s) can be updated`);
   }
 };
