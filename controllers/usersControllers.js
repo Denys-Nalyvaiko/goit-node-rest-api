@@ -1,5 +1,6 @@
 import catchAsync from "../helpers/catchAsync.js";
 import * as services from "../services/usersServices.js";
+import { ImageService } from "../services/ImageSevice.js";
 
 export const registerUserController = catchAsync(async (req, res) => {
   const { email, subscription } = await services.registerUser(req.body);
@@ -39,5 +40,7 @@ export const changeUserSubscriptionController = catchAsync(async (req, res) => {
 });
 
 export const changeUserAvatarURL = catchAsync(async (req, res) => {
+  await ImageService.saveStaticImage();
+
   res.status(200).json({ msg: "Success" });
 });

@@ -1,22 +1,28 @@
 import multer from "multer";
 import path from "path";
-import * as fse from "fs-extra";
+import fse from "fs-extra";
+import Jimp from "jimp";
 import HttpError from "../helpers/HttpError.js";
 
 export class ImageService {
   static #temporaryPath = path.join(process.cwd(), "tmp");
-  static #fileName;
+  static #staticDestinationPath = path.join(process.cwd(), "public", "avatars");
+  static #originalFileName;
 
   static saveOriginalTemporaryFile(name) {
     const storage = multer.diskStorage({
       destination: async (req, file, callback) => {
-        await fse.ensureDir(this.#temporaryPath);
-        callback(null, this.#temporaryPath);
+        try {
+          await fse.ensureDir(this.#temporaryPath);
+          callback(null, this.#temporaryPath);
+        } catch (error) {
+          throw HttpError(400);
+        }
       },
-      filename: (req, file, callback) => {
-        this.#fileName = file.originalname;
 
-        callback(null, this.#fileName);
+      filename: (req, file, callback) => {
+        this.#originalFileName = file.originalname;
+        callback(null, this.#originalFileName);
       },
     });
 
@@ -35,5 +41,34 @@ export class ImageService {
     });
 
     return multerUpload.single(name);
+  }
+
+  static async saveStaticImage() {
+    try {
+      const uniqueFileName =
+        Date.now() +
+        "-" +
+        Math.round(Math.random() * 1e9) +
+        "-" +
+        this.#originalFileName;
+
+      const temporaryFilePath = path.join(
+        this.#temporaryPath,
+        this.#originalFileName
+      );
+
+      const staticFilePath = path.join(
+        this.#staticDestinationPath,
+        uniqueFileName
+      );
+
+      const image = await Jimp.read(temporaryFilePath);
+
+      await fse.ensureDir(this.#staticDestinationPath);
+      await image.cover(250, 250).writeAsync(staticFilePath);
+      await fse.remove(temporaryFilePath);
+    } catch (error) {
+      throw HttpError(400);
+    }
   }
 }
