@@ -48,8 +48,6 @@ export class ImageService {
   }
 
   static async saveStaticImage(options, ...destinationPath) {
-    console.log(destinationPath);
-
     this.#staticDestinationPath = !destinationPath.length
       ? path.resolve("public", "images")
       : path.resolve(...destinationPath);
