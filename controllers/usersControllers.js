@@ -37,3 +37,7 @@ export const changeUserSubscriptionController = catchAsync(async (req, res) => {
 
   res.status(200).json(user);
 });
+
+export const changeUserAvatarURL = catchAsync(async (req, res) => {
+  res.status(200).json({ msg: "Success" });
+});

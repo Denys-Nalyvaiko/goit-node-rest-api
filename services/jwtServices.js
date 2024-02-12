@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import HttpError from "../helpers/HttpError.js";
 import { DEFAULT_EXPIRED_TIME } from "../constants/defaultExpiredTime.js";
 
 dotenv.config();

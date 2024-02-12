@@ -48,4 +48,11 @@ usersRouter.patch(
   controllers.changeUserSubscriptionController
 );
 
+usersRouter.patch(
+  "/avatar",
+  authMiddlewares.protect,
+  usersMiddlewares.saveTemporaryAvatar,
+  controllers.changeUserAvatarURL
+);
+
 export default usersRouter;
