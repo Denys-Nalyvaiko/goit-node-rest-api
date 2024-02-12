@@ -52,6 +52,10 @@ export class ImageService {
       ? path.resolve("public", "images")
       : path.resolve(...destinationPath);
 
+    if (!this.#originalFileName) {
+      throw HttpError(400, "Invalid file format");
+    }
+
     const uniqueFileName =
       Date.now() +
       "-" +
