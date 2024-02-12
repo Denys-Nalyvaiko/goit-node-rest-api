@@ -4,12 +4,14 @@ import fse from "fs-extra";
 import Jimp from "jimp";
 import HttpError from "../helpers/HttpError.js";
 import { User } from "../models/usersModel.js";
+import { DEFAULT_IMAGE_OPTIONS } from "../constants/defaultImageOptions.js";
 
 export class ImageService {
   static #temporaryPath = path.resolve("tmp");
-  static #staticDestinationPath = path.resolve("public", "avatars");
+  static #staticDestinationPath;
   static #originalFileName;
   static #staticFilePath;
+  static #staticPartFilePath;
 
   static saveOriginalTemporaryFile(name) {
     const storage = multer.diskStorage({
@@ -45,29 +47,39 @@ export class ImageService {
     return multerUpload.single(name);
   }
 
-  static async saveStaticImage() {
+  static async saveStaticImage(options, ...destinationPath) {
+    console.log(destinationPath);
+
+    this.#staticDestinationPath = !destinationPath.length
+      ? path.resolve("public", "images")
+      : path.resolve(...destinationPath);
+
+    const uniqueFileName =
+      Date.now() +
+      "-" +
+      Math.round(Math.random() * 1e9) +
+      "-" +
+      this.#originalFileName;
+
+    const temporaryFilePath = path.resolve(
+      this.#temporaryPath,
+      this.#originalFileName
+    );
+
+    this.#staticFilePath = path.resolve(
+      this.#staticDestinationPath,
+      uniqueFileName
+    );
+
+    this.#staticPartFilePath = !destinationPath.length
+      ? path.join("public", "images")
+      : path.join(...destinationPath.slice(1), uniqueFileName);
+
     try {
-      const uniqueFileName =
-        Date.now() +
-        "-" +
-        Math.round(Math.random() * 1e9) +
-        "-" +
-        this.#originalFileName;
-
-      const temporaryFilePath = path.resolve(
-        this.#temporaryPath,
-        this.#originalFileName
-      );
-
-      this.#staticFilePath = path.resolve(
-        this.#staticDestinationPath,
-        uniqueFileName
-      );
-
-      const image = await Jimp.read(temporaryFilePath);
-
       await fse.ensureDir(this.#staticDestinationPath);
-      await image.cover(250, 250).writeAsync(this.#staticFilePath);
+
+      await this.#processImage(temporaryFilePath, options);
+
       await fse.remove(temporaryFilePath);
     } catch ({ message }) {
       throw HttpError(400, message);
@@ -79,7 +91,7 @@ export class ImageService {
       const user = await User.findByIdAndUpdate(
         userId,
         {
-          avatarURL: this.#staticFilePath,
+          avatarURL: this.#staticPartFilePath,
         },
         { new: true }
       );
@@ -92,5 +104,16 @@ export class ImageService {
     } catch ({ message }) {
       throw HttpError(400, message);
     }
+  }
+
+  static async #processImage(temporaryFilePath, options) {
+    const image = await Jimp.read(temporaryFilePath);
+
+    await image
+      .cover(
+        options?.width ?? DEFAULT_IMAGE_OPTIONS.WIDTH,
+        options?.height ?? DEFAULT_IMAGE_OPTIONS.HEIGHT
+      )
+      .writeAsync(this.#staticFilePath);
   }
 }
