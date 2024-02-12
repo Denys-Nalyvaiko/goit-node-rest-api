@@ -41,6 +41,7 @@ export const changeUserSubscriptionController = catchAsync(async (req, res) => {
 
 export const changeUserAvatarURL = catchAsync(async (req, res) => {
   await ImageService.saveStaticImage();
+  const { avatarURL } = await ImageService.saveImagePathToDB(req.user._id);
 
-  res.status(200).json({ msg: "Success" });
+  res.status(200).json({ avatarURL });
 });

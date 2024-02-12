@@ -3,11 +3,13 @@ import path from "path";
 import fse from "fs-extra";
 import Jimp from "jimp";
 import HttpError from "../helpers/HttpError.js";
+import { User } from "../models/usersModel.js";
 
 export class ImageService {
-  static #temporaryPath = path.join(process.cwd(), "tmp");
-  static #staticDestinationPath = path.join(process.cwd(), "public", "avatars");
+  static #temporaryPath = path.resolve("tmp");
+  static #staticDestinationPath = path.resolve("public", "avatars");
   static #originalFileName;
+  static #staticFilePath;
 
   static saveOriginalTemporaryFile(name) {
     const storage = multer.diskStorage({
@@ -15,8 +17,8 @@ export class ImageService {
         try {
           await fse.ensureDir(this.#temporaryPath);
           callback(null, this.#temporaryPath);
-        } catch (error) {
-          throw HttpError(400);
+        } catch ({ message }) {
+          throw HttpError(400, message);
         }
       },
 
@@ -52,12 +54,12 @@ export class ImageService {
         "-" +
         this.#originalFileName;
 
-      const temporaryFilePath = path.join(
+      const temporaryFilePath = path.resolve(
         this.#temporaryPath,
         this.#originalFileName
       );
 
-      const staticFilePath = path.join(
+      this.#staticFilePath = path.resolve(
         this.#staticDestinationPath,
         uniqueFileName
       );
@@ -65,10 +67,30 @@ export class ImageService {
       const image = await Jimp.read(temporaryFilePath);
 
       await fse.ensureDir(this.#staticDestinationPath);
-      await image.cover(250, 250).writeAsync(staticFilePath);
+      await image.cover(250, 250).writeAsync(this.#staticFilePath);
       await fse.remove(temporaryFilePath);
-    } catch (error) {
-      throw HttpError(400);
+    } catch ({ message }) {
+      throw HttpError(400, message);
+    }
+  }
+
+  static async saveImagePathToDB(userId) {
+    try {
+      const user = await User.findByIdAndUpdate(
+        userId,
+        {
+          avatarURL: this.#staticFilePath,
+        },
+        { new: true }
+      );
+
+      if (!user) {
+        throw HttpError(404);
+      }
+
+      return user;
+    } catch ({ message }) {
+      throw HttpError(400, message);
     }
   }
 }
