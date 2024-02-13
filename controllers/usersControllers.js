@@ -41,6 +41,7 @@ export const changeUserSubscriptionController = catchAsync(async (req, res) => {
 
 export const changeUserAvatarURL = catchAsync(async (req, res) => {
   await ImageService.saveStaticImage(
+    req.user._id,
     { width: 250, height: 250 },
     "public",
     "avatars"

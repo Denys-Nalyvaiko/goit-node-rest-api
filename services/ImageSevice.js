@@ -47,7 +47,7 @@ export class ImageService {
     return multerUpload.single(name);
   }
 
-  static async saveStaticImage(options, ...destinationPath) {
+  static async saveStaticImage(userId, options, ...destinationPath) {
     this.#staticDestinationPath = !destinationPath.length
       ? path.resolve("public", "images")
       : path.resolve(...destinationPath);
@@ -57,11 +57,7 @@ export class ImageService {
     }
 
     const uniqueFileName =
-      Date.now() +
-      "-" +
-      Math.round(Math.random() * 1e9) +
-      "-" +
-      this.#originalFileName;
+      Date.now() + "-" + userId.toString() + "-" + this.#originalFileName;
 
     const temporaryFilePath = path.resolve(
       this.#temporaryPath,
