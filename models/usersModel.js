@@ -1,6 +1,7 @@
 import { Schema, model } from "mongoose";
 import { SUBSCRIPTION_TYPE } from "../constants/subscriptionTypes.js";
 import { hashUsersPassword } from "../hooks/usersHooks.js";
+import { generateUserAvatarHook } from "../hooks/generateUserAvatarHook.js";
 import { comparePassword } from "../customMethods/customUserMethods.js";
 
 export const usersSchema = new Schema(
@@ -20,12 +21,15 @@ export const usersSchema = new Schema(
       enum: [...Object.values(SUBSCRIPTION_TYPE)],
       default: SUBSCRIPTION_TYPE.STARTER,
     },
+    avatarURL: String,
     token: String,
   },
   { versionKey: false }
 );
 
 usersSchema.pre("save", hashUsersPassword);
+
+usersSchema.pre("save", generateUserAvatarHook);
 
 usersSchema.methods.comparePassword = comparePassword;
 
