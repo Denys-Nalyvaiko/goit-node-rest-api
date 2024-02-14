@@ -49,7 +49,7 @@ usersRouter.patch(
 );
 
 usersRouter.patch(
-  "/avatar",
+  "/avatars",
   authMiddlewares.protect,
   usersMiddlewares.saveTemporaryAvatar,
   controllers.changeUserAvatarURL
