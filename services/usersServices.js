@@ -36,6 +36,10 @@ export const loginUser = async ({ email, password }) => {
 
   user.password = undefined;
 
+  if (!user.verify) {
+    throw HttpError(401, "Email is not verified");
+  }
+
   const token = jwtServices.signToken(user.id);
   await User.findByIdAndUpdate(user._id, { token });
 
@@ -91,10 +95,10 @@ export const updateUser = async (userId, userData) => {
 export const verifyUserRegistration = async (verificationToken) => {
   const user = await User.findOneAndUpdate(
     { verificationToken },
-    { verificationToken: "", verify: true }
+    { verificationToken: null, verify: true }
   );
 
   if (!user) {
-    throw HttpError(401);
+    throw HttpError(404, "User not found");
   }
 };
