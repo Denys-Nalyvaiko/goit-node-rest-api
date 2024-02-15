@@ -55,6 +55,9 @@ usersRouter.patch(
   controllers.changeUserAvatarURL
 );
 
-usersRouter.get("/verify", controllers.verifyUserRegistrationController);
+usersRouter.get(
+  "/verify/:verificationToken",
+  controllers.verifyUserRegistrationController
+);
 
 export default usersRouter;

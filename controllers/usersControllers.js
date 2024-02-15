@@ -58,12 +58,7 @@ export const changeUserAvatarURL = catchAsync(async (req, res) => {
 });
 
 export const verifyUserRegistrationController = catchAsync(async (req, res) => {
-  await sendEmail({
-    to: EMAIL_TO,
-    subject: "Verification Email",
-    text: "Click here to verify user",
-    html: "<p>Click here to verify user</p>",
-  });
+  await services.verifyUserRegistration(req.params.verificationToken);
 
   res.status(200).json({ message: "Verification successful" });
 });
