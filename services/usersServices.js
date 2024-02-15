@@ -102,3 +102,22 @@ export const verifyUserRegistration = async (verificationToken) => {
     throw HttpError(404, "User not found");
   }
 };
+
+export const resendEmailVerirification = async (email) => {
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throw HttpError(404);
+  }
+
+  if (user.verify) {
+    throw HttpError(400, "Verification has already been passed");
+  }
+
+  await sendEmail({
+    to: user.email,
+    subject: "Confirm your registration",
+    text: `verificationToken: ${user.verificationToken}`,
+    html: `<a href=http://localhost:8000/users/verify/${user.verificationToken} target="_blank">click to verify your account</a>`,
+  });
+};

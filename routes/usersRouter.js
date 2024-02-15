@@ -60,4 +60,6 @@ usersRouter.get(
   controllers.verifyUserRegistrationController
 );
 
+usersRouter.post("/verify", controllers.resendEmailVerificationController);
+
 export default usersRouter;

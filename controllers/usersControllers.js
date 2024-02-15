@@ -62,3 +62,11 @@ export const verifyUserRegistrationController = catchAsync(async (req, res) => {
 
   res.status(200).json({ message: "Verification successful" });
 });
+
+export const resendEmailVerificationController = catchAsync(
+  async (req, res) => {
+    await services.resendEmailVerirification(req.body.email);
+
+    res.status(200).json({ message: "Verification email sent" });
+  }
+);
