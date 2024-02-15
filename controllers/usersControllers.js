@@ -2,7 +2,6 @@ import dotenv from "dotenv";
 import catchAsync from "../helpers/catchAsync.js";
 import * as services from "../services/usersServices.js";
 import { ImageService } from "../services/ImageSevice.js";
-import { sendEmail } from "../services/emailServices.js";
 
 dotenv.config();
 
