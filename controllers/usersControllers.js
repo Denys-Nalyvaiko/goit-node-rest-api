@@ -8,7 +8,7 @@ dotenv.config();
 const { EMAIL_TO } = process.env;
 
 export const registerUserController = catchAsync(async (req, res) => {
-  const { email, subscription } = await services.registerUser(req.body);
+  const { email, subscription } = await services.registerUser(req.body, req);
 
   res.status(201).json({ user: { email, subscription } });
 });

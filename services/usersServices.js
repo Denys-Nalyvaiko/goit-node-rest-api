@@ -5,7 +5,8 @@ import { User } from "../models/usersModel.js";
 import * as jwtServices from "../services/jwtServices.js";
 import { sendEmail } from "./emailServices.js";
 
-export const registerUser = async (userData) => {
+export const registerUser = async (userData, req) => {
+  const reqURL = req.protocol + "://" + req.get("host");
   const verificationToken = nanoid();
 
   const user = await User.create({ ...userData, verificationToken });
@@ -15,7 +16,7 @@ export const registerUser = async (userData) => {
     to: user.email,
     subject: "Confirm your registration",
     text: `verificationToken: ${verificationToken}`,
-    html: `<a href=http://localhost:8000/users/verify/${verificationToken} target="_blank">click to verify your account</a>`,
+    html: `<a href=${reqURL}/users/verify/${verificationToken} target="_blank">click to verify your account</a>`,
   });
 
   return user;
