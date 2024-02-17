@@ -1,9 +1,14 @@
+import dotenv from "dotenv";
 import catchAsync from "../helpers/catchAsync.js";
 import * as services from "../services/usersServices.js";
 import { ImageService } from "../services/ImageSevice.js";
 
+dotenv.config();
+
+const { EMAIL_TO } = process.env;
+
 export const registerUserController = catchAsync(async (req, res) => {
-  const { email, subscription } = await services.registerUser(req.body);
+  const { email, subscription } = await services.registerUser(req.body, req);
 
   res.status(201).json({ user: { email, subscription } });
 });
@@ -50,3 +55,17 @@ export const changeUserAvatarURL = catchAsync(async (req, res) => {
 
   res.status(200).json({ avatarURL });
 });
+
+export const verifyUserRegistrationController = catchAsync(async (req, res) => {
+  await services.verifyUserRegistration(req.params.verificationToken);
+
+  res.status(200).json({ message: "Verification successful" });
+});
+
+export const resendEmailVerificationController = catchAsync(
+  async (req, res) => {
+    await services.resendEmailVerirification(req.body.email);
+
+    res.status(200).json({ message: "Verification email sent" });
+  }
+);

@@ -55,4 +55,11 @@ usersRouter.patch(
   controllers.changeUserAvatarURL
 );
 
+usersRouter.get(
+  "/verify/:verificationToken",
+  controllers.verifyUserRegistrationController
+);
+
+usersRouter.post("/verify", controllers.resendEmailVerificationController);
+
 export default usersRouter;

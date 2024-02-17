@@ -17,3 +17,10 @@ export const updateSubscriptionUserTypeSchema = Joi.object({
     .default(SUBSCRIPTION_TYPE.STARTER)
     .messages({ "any.required": "Invalid subscription type" }),
 });
+
+export const resendUserVerificationSchema = Joi.object({
+  email: Joi.string()
+    .required()
+    .email()
+    .messages({ "any.required": "Missing required email field" }),
+});
